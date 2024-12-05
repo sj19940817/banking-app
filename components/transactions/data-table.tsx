@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { Button } from "../ui/button";
+import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -26,16 +27,19 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [pagination, setPagination] = useState({
+    pageSize: 5,
+    pageIndex: 0,
+  });
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
     state: {
-      pagination: {
-        pageIndex: 0,
-        pageSize: 5,
-      },
+      pagination,
     },
   });
 

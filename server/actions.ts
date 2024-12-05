@@ -5,11 +5,10 @@ import prisma from "@/prisma.config";
 type BankingResponse = {
   success: boolean;
   data?: object;
-  error?: any;
+  error?: string;
 };
-type BankingFunc = (number: number) => Promise<BankingResponse>;
 
-const deposit: BankingFunc = async (amount) => {
+const deposit = async (amount: number): Promise<BankingResponse> => {
   if (amount <= 0) {
     return {
       success: false,
@@ -38,12 +37,12 @@ const deposit: BankingFunc = async (amount) => {
     });
 
     return { success: true, data: { balance: updatedAccount.balance } };
-  } catch (e) {
-    return { success: false, error: e };
+  } catch {
+    return { success: false, error: "Deposit Failed" };
   }
 };
 
-const withdraw: BankingFunc = async (amount) => {
+const withdraw = async (amount: number): Promise<BankingResponse> => {
   if (amount <= 0) {
     return {
       success: false,
@@ -77,8 +76,8 @@ const withdraw: BankingFunc = async (amount) => {
     });
 
     return { success: true, data: { balance: updatedAccount.balance } };
-  } catch (e) {
-    return { success: false, error: e };
+  } catch {
+    return { success: false, error: "Withdraw Failed" };
   }
 };
 
@@ -91,6 +90,5 @@ export async function doTransaction({
 }): Promise<BankingResponse> {
   if (type === "deposit") return deposit(amount);
   else if (type === "withdraw") return withdraw(amount);
-
-  return { success: true };
+  else return { success: false, error: "Invalid Type!" };
 }
